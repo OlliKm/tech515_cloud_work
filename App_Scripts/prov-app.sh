@@ -48,8 +48,8 @@ echo
  
 # copy app code to VM
 # git clone <endpoint to your GitHub public repo with app code> repo
-echo git clone repo
- git clone https://github.com/OlliKm/tech515_sparta_app.git repo
+echo git clone repo in PWD
+ git clone https://github.com/OlliKm/tech515_sparta_app_to_clone.git "$PWD/repo"
  echo
 
 
@@ -58,7 +58,7 @@ cd repo/app
  
 #connect to database - may need to change ip for new load of system
 # original had issues of not working - due to me not having the :3000/posts in url on had /posts
-export DB_HOST=mongodb://172.31.53.160/posts
+export DB_HOST=mongodb://172.31.45.108/posts
 printenv DB_HOST
  
 

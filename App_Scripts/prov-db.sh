@@ -33,7 +33,7 @@ echo done!
 echo
 
 echo Install Mongo DB..
-#need to tet so it doesnt ask for ui input of fresh vm
+#need to tet so it doesn't ask for ui input of fresh vm
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
    mongodb-org=7.0.24 \
    mongodb-org-database=7.0.24 \
