@@ -10,3 +10,16 @@
 
 ## overview of the automation levels
 ![alt text](<script to ami's.png>)
+
+
+## Plan to create and test AMI's 
+
+1. deploy app with /posts working(meaning app and DB have all dependencies )
+2. Create DB AMI
+3. Create app AMI
+4. Test AMI's just created
+5. Created DB VM using DB AMI
+6. Create app VM using the app VMI(with little user data)
+7. terminate
+   1. original app & db vm's we used to create the AMI
+   2. New app and DB VM's that used the new AMI's 
