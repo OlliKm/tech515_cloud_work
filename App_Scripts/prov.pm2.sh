@@ -1,13 +1,3 @@
-
- ## documentation for app script issues I faced.
-
-##### issues im facing is that app.js isn't running automatically i have to manually start it to get it working so I need to fix pm2 or npm start in the script 
-
-* the fix was to create a separate script to put in the user data to make sure the app runs on start up and that the private ip can be changed.
-  * Here is the script I used
-
-
-```
 #!/bin/bash
 
 # when running the app ami make sure to input this script into the user data to make sure it runs.
@@ -29,5 +19,4 @@ sudo systemctl reload nginx
 # start app and enable reboot startup
 pm2 start app.js 
 pm2 enable app.js
-pm2 save 
-```
+pm2 save

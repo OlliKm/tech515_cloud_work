@@ -7,43 +7,37 @@
  
  #update and upgrade
 echo Update sources list...
- apt update
+sudo apt update
 echo Done!
 echo
  
 echo Upgrade...
- DEBIAN_FRONTEND=noninteractive apt upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
 echo Done!
 echo
  
 # install nginx - will later be used as a reverse proxy
 echo Install nginx...
- DEBIAN_FRONTEND=noninteractive apt install nginx -y
+sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
 echo Done!
 echo
  
 # nginx by default already enabled other uncomment the next line
 # sudo systemctl enable nginx
  
- #install curl
-apt install -y curl
-
-
 echo Setup for install of Node JS 20...
 curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
- DEBIAN_FRONTEND=noninteractive bash nodesource_setup.sh
+sudo DEBIAN_FRONTEND=noninteractive bash nodesource_setup.sh
 echo Done!
 echo
  
 # NODE JS Install
 echo Install Node JS 20...
 # TEST TO MAKE SURE NO USER INPUT
- DEBIAN_FRONTEND=noninteractive apt install nodejs -y
+sudo DEBIAN_FRONTEND=noninteractive apt install nodejs -y
 echo Done!
 echo
  
- #install git
- apt install git -y
 
 # git clone app files
 echo git clone repo 
@@ -64,18 +58,15 @@ export DB_HOST=mongodb://172.31.54.140/posts
 printenv DB_HOST
  
  #put in the reverse proxy 
- sed -i "s|try_files \$uri \$uri/ =404;|proxy_pass http://127.0.0.1:3000;|" /etc/nginx/sites-available/default
-# Auto-redirect / → /posts
-sed -i '/location \/ {/a return 302 /posts;' /etc/nginx/sites-available/default
+sudo sed -i "s|try_files \$uri \$uri/ =404;|proxy_pass http://127.0.0.1:3000;|" /etc/nginx/sites-available/default
 
- systemctl reload nginx
+sudo systemctl reload nginx
 
 #install pm2
-npm install -g pm2
+ sudo npm install -g pm2
 
+#run app only script 
 # start app and enable reboot startup
-pm2 start app.js &
+pm2 start app.js 
+pm2 enable app.js
 pm2 save
-
-
-

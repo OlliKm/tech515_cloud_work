@@ -48,7 +48,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
    # configure bind IP # to 0.0.0.0 - with sed command
 echo "Configuring mongod.conf bindIp..."
-sudo sed -i 's/^  bindIp: .*/  bindIp: 0.0.0.0/' /etc/mongod.conf
+# finds whatever bindIP is being used on localhost/after BindIp and replaces it with 0.0.0. -would change every time ( .* searches for anything)
+sudo sed -i 's/^  bindIp: .*/  bindIp: 0.0.0.0/' /etc/mongod.conf # could implement an n for number of times 
 echo "Done!"
 echo
    
