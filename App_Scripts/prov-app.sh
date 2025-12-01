@@ -54,7 +54,7 @@ echo Done!
 echo
  
 #connect to database - may need to change ip for new load of system
-export DB_HOST=mongodb://172.31.54.140/posts
+export DB_HOST=mongodb://172.31.25.55/posts
 printenv DB_HOST
  
  #put in the reverse proxy 
