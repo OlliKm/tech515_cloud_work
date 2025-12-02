@@ -73,3 +73,6 @@ pm2 start app.js
 ```
 
 ## Fix was to add port 3000 onto AWS instance to allow access into port 3000 as the reverse proxy skipped the port 3000 taking us to the page directly ignoring the tunnel of port 3000: once added we are able to see the posts page that runs through port 3000.
+
+
+

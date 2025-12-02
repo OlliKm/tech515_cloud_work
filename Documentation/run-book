@@ -1,0 +1,270 @@
+
+- [Run Book](#run-book)
+- [step 1 - Setting up your AWS Key](#step-1---setting-up-your-aws-key)
+- [step 2 - Storing your Private Key safely](#step-2---storing-your-private-key-safely)
+- [step 3 - Creating your DB (Data Base) Instance](#step-3---creating-your-db-data-base-instance)
+    - [Network Settings for db](#network-settings-for-db)
+    - [Network Settings for App](#network-settings-for-app)
+- [DB Script walkthrough](#db-script-walkthrough)
+- [Here are some problem I encountered while making:](#here-are-some-problem-i-encountered-while-making)
+        - [Mongod wasn't starting when script was running](#mongod-wasnt-starting-when-script-was-running)
+          - [The reason for is :](#the-reason-for-is-)
+  - [I changed the "" into '' instead and I also had to remove the ^ symbol. in the config file for mongod the spacing/syntax was all wrong and not the correct format that a YAML file needed to run/work therefore causing it to crash. due to this I had to fix the spacing and syntax and remove some symbols fixing the overall DB issues.](#i-changed-the--into--instead-and-i-also-had-to-remove-the--symbol-in-the-config-file-for-mongod-the-spacingsyntax-was-all-wrong-and-not-the-correct-format-that-a-yaml-file-needed-to-runwork-therefore-causing-it-to-crash-due-to-this-i-had-to-fix-the-spacing-and-syntax-and-remove-some-symbols-fixing-the-overall-db-issues)
+- [Break down of the scripts](#break-down-of-the-scripts)
+      - [The first few lines](#the-first-few-lines)
+      - [Getting our installs ready](#getting-our-installs-ready)
+      - [Installing MongoDB](#installing-mongodb)
+      - [Replacing the Bind Ip in the config files](#replacing-the-bind-ip-in-the-config-files)
+- [App Script walkthrough](#app-script-walkthrough)
+    - [replacing the lines in the nginx default to a proxy pass of 3000](#replacing-the-lines-in-the-nginx-default-to-a-proxy-pass-of-3000)
+    - [Getting node off the web and downloading it](#getting-node-off-the-web-and-downloading-it)
+    - [cloning the github repo with the app files in it into a file called repo](#cloning-the-github-repo-with-the-app-files-in-it-into-a-file-called-repo)
+    - [connecting db-hosts to a variable for mongodb and putting in DB priv ip and local host to allow for us to access /posts](#connecting-db-hosts-to-a-variable-for-mongodb-and-putting-in-db-priv-ip-and-local-host-to-allow-for-us-to-access-posts)
+    - [now we have nodejs installed we can now install](#now-we-have-nodejs-installed-we-can-now-install)
+    - [installing pm2 to run app in background](#installing-pm2-to-run-app-in-background)
+    - [stoping any running jobs then start to make sure its fresh and the port isn't occupied.](#stoping-any-running-jobs-then-start-to-make-sure-its-fresh-and-the-port-isnt-occupied)
+      - [change the IP to match the DB priv IP](#change-the-ip-to-match-the-db-priv-ip)
+      - [stop all pm2 jobs running](#stop-all-pm2-jobs-running)
+
+
+# Run Book
+
+walkthrough of how to recreate an app deployment
+
+Before you start you will need access to an AWS EC2 instance, this is what we will be using to create the app and database.
+
+# step 1 - Setting up your AWS Key
+
+in order to be able to create a working instance you first need to get your hands on a AWS key- 
+The key is used to gain access into our virtual machines later.
+
+Once logged into your AWS account in the search bar in the top left type "Key pairs" this could then bring up a EC2 feature, 
+when you have clicked on that it will bring up a page full of key pairs if their isn't any yet we can just make one. 
+in order to do so click the Create key pair in the top right corner: 
+Entering an appropriate name something like "Group-Name-AWS" you want to make sure you have the RSA key pair type selected and make sure the private key format is .pem ( this will allow us to SSH into the VM later)
+Once you have clicked create a Public key will be attached onto the AWS page and a Private key will be downloaded onto your device. (Never reveal your private key to anyone)
+
+# step 2 - Storing your Private Key safely
+
+When working with private keys its important to store them in a safe location that you wont ever release onto something like GITHUB, 
+A typical location to put your .pem key is within your Home Directory on your computer. 
+
+An example of how to get to your home directory is as follows: 
+"C/Users/pc-name/" Once on your HD ( Home directory) create a folder called .ssh this is where we will be storing our private pem key.
+> DO NOT under any circumstances Git Init this file or any Parent folder of it
+Once the key is store its time to create your first instance
+
+# step 3 - Creating your DB (Data Base) Instance
+Back on AWS there should be a list on the left hand side when you are on EC2, if there is not click the blue circle with the 3 lines in the middle.
+On the list there should be an option called instances if so click on it.
+
+This should then bring up a list of all the instanced created by you or your organization if there is none worry not, we will make one.
+In the top left corner click ""Launch Instance" 
+That will then take you onto a page asking you to fill out information and select and application and OS image, 
+
+The first thing you want to do is to name your image appropriately something like "group-name-db-to-run",or "group-name-app-to-run" once you have named it you need to select a OS Image, for this guide we will be Using "Ubuntu".
+Click on the Ubuntu quick start and just below on the AMI tap click the drop down box just below it and select "Ubuntu Server 22.04 LTS (HVM) SSD Volume type" This should be a free tier image.
+
+Once selected scroll down to Instance type clicking the drop down arrow inside the box type/select "t3.micro" when selected the all generations slider should be ticked which is good.
+once completed you can move on to adding your key pair you just created in the Key Pair Login box just below, For this you can just search for it with the group-name you made earlier.
+
+### Network Settings for db
+
+With all of this completed we need to sort out the  DB Network Settings:
+
+You should have two inbound rules the first is the SSH port range 22
+and the other is the Custom TCP 27017
+
+You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like "group-name-allow-ssh-mongodb" and just copy and paste the name into the description as well. 
+
+To add the port 27017 we need to click the Add security group rule button which will allow us to then put 27017 into the port range box and then you're done.
+
+You can now click "Launch Instance on the right hand side of the screen (An orange button)
+
+### Network Settings for App
+
+For the app instance you will need to have 3 different inbound rules
+port 80, Can be added by clicking the "Allow HTTP traffic from internet before clicking edit on the network settings. 
+port 3000, - Used later when making our app link to pages.
+port 22,- default port
+
+You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like "group-name-allow-ssh-http" and just copy and paste the name into the description as well. 
+
+To add the port 3000 we need to click the Add security group rule button which will allow us to then put 3000 into the port range box and then you're done.
+
+You can now click "Launch Instance on the right hand side of the screen (An orange button)
+
+------------------------------------------
+
+# DB Script walkthrough  
+
+My script now: 
+```
+#!/bin/bash
+#update and upgrade
+sudo apt update
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
+
+#install gpg for mongo db
+curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor --yes
+
+#create mongodb list
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+sudo  apt-get update
+
+#sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+   mongodb-org=7.0.24 \
+   mongodb-org-database=7.0.24 \
+   mongodb-org-server=7.0.24 \
+   mongodb-mongosh \
+   mongodb-org-shell=7.0.24 \
+   mongodb-org-mongos=7.0.24 \
+   mongodb-org-tools=7.0.24 \
+   mongodb-org-database-tools-extra=7.0.24
+
+
+sudo sed -i 's/bindIp: .*/bindIp: 0.0.0.0/' /etc/mongod.conf
+
+sudo systemctl start mongod
+sudo systemctl enable mongod 
+```
+# Here are some problem I encountered while making:
+
+##### Mongod wasn't starting when script was running
+###### The reason for is :
+* Before:
+> sudo sed -i "s/^  bindIp: .*/  bindIp: 0.0.0.0/" /etc/mongod.conf
+
+* After: 
+> sudo sed -i 's/bindIp: .*/bindIp: 0.0.0.0/' /etc/mongod.conf
+* Other changes done to fix issues include:
+ I changed the "" into '' instead and I also had to remove the ^ symbol. in the config file for mongod the spacing/syntax was all wrong and not the correct format that a YAML file needed to run/work therefore causing it to crash. due to this I had to fix the spacing and syntax and remove some symbols fixing the overall DB issues.
+--------------------------------------------
+ # Break down of the scripts 
+
+#### The first few lines 
+
+This lets the console know we are wanting to use a Bash terminal
+> #!/bin/bash - 
+
+This is a good thing to run when you first start a fresh VM as it makes sure everything is updated to latest version.
+> sudo apt update - 
+
+This is also something you may want to run at the start as it will upgrade everything 
+
+> sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y - 
+
+DEBIAN_FRONTEND=noninteractive - this tell the computer when running that we don't want any user interface 
+
+-y - this simply just tells the computer that we say yes to everything that may come up. 
+
+#### Getting our installs ready
+
+> #installing gpg for mongo db to work
+curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor --yes
+
+
+> #creating a list for mongodb
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+
+sudo  apt-get update - getting the update for the mongodb
+
+#### Installing MongoDB 
+
+following from the mongodb installation guide on their website we install version 7, and we make sure theirs no UI 
+
+> #sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+   mongodb-org=7.0.24 \
+   mongodb-org-database=7.0.24 \
+   mongodb-org-server=7.0.24 \
+   mongodb-mongosh \
+   mongodb-org-shell=7.0.24 \
+   mongodb-org-mongos=7.0.24 \
+   mongodb-org-tools=7.0.24 \
+   mongodb-org-database-tools-extra=7.0.24
+
+
+#### Replacing the Bind Ip in the config files
+
+this is an automated way to replace whatever the bind ip is when mongodp start and swaps it with 0.0.0.0 we do this by using the SED command.
+
+> sudo sed -i 's/bindIp: .*/bindIp: 0.0.0.0/' /etc/mongod.conf 
+
+
+we then start mongodb and enable it 
+> sudo systemctl start mongod
+> sudo systemctl enable mongod 
+
+------------------------------------------------
+
+ # App Script walkthrough  
+
+ Current App Script:
+
+This section is same for most script and as described above
+ > #!/bin/bash
+echo update start
+sudo apt update
+
+> echo upgrade start
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
+
+This installs NginX so that the webpage works
+> echo nginx install
+sudo  DEBIAN_FRONTEND=noninteractive apt install nginx -y
+
+### replacing the lines in the nginx default to a proxy pass of 3000
+
+> sudo sed -i 's|try_files \$uri \$uri/ =404;|proxy_pass http://127.0.0.1:3000;|' /etc/nginx/sites-available/default
+sudo systemctl restart nginx
+
+### Getting node off the web and downloading it 
+> curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
+> sudo DEBIAN_FRONTEND=noninteractive bash nodesource_setup.sh
+> sudo DEBIAN_FRONTEND=noninteractive apt install nodejs -y
+
+### cloning the github repo with the app files in it into a file called repo
+> git clone https://github.com/OlliKm/tech515_sparta_app_to_clone.git repo 
+cd repo/app
+
+### connecting db-hosts to a variable for mongodb and putting in DB priv ip and local host to allow for us to access /posts
+> export DB_HOST=mongodb://172.31.25.55:27017/posts
+> printenv DB_HOST
+
+### now we have nodejs installed we can now install
+> npm install
+
+### installing pm2 to run app in background
+> sudo npm install -g pm2
+
+### stoping any running jobs then start to make sure its fresh and the port isn't occupied. 
+> pm2 stop all
+> pm2 start app.js
+
+--------------------------------------
+
+> # In the User Data Section 
+This script I had the most problem with getting working, things such as PM2 not starting properly whenever I ran the script to fix this I had to create a separate run script to put in the user data section of the instance on AWS. 
+
+#### change the IP to match the DB priv IP
+export DB_HOST=mongodb://DB-PRIV-IP:27017/posts
+printenv DB_HOST
+
+#### stop all pm2 jobs running
+pm2 stop all
+
+#run a new fresh pm2 job
+pm2 start app.js
+
+--------------------------------------------
+
+This fixed that issue but then i had another issue where I could get the app home page working with the reverse proxy working but whenever I tried to add the /posts into the url of web i got an error message of "{}" to fix this I experimented with many things such as syntaxes moving parts of the script around and adding the :27017 part to the posts section but what fixed my posts page was going into my App instance on AWS and adding the Network Setting of adding Port 3000, as the reverse proxy skipped the port 3000 tunnel meaning I didn't experience it until I when onto the posts page which needed to use the port 3000 to run the posts.
+
