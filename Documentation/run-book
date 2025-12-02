@@ -38,11 +38,11 @@ Before you start you will need access to an AWS EC2 instance, this is what we wi
 in order to be able to create a working instance you first need to get your hands on a AWS key- 
 The key is used to gain access into our virtual machines later.
 
-Once logged into your AWS account in the search bar in the top left type "Key pairs" this could then bring up a EC2 feature, 
-when you have clicked on that it will bring up a page full of key pairs if their isn't any yet we can just make one. 
-in order to do so click the Create key pair in the top right corner: 
-Entering an appropriate name something like "Group-Name-AWS" you want to make sure you have the RSA key pair type selected and make sure the private key format is .pem ( this will allow us to SSH into the VM later)
-Once you have clicked create a Public key will be attached onto the AWS page and a Private key will be downloaded onto your device. (Never reveal your private key to anyone)
+1. Once logged into your AWS account in the search bar in the top left type "Key pairs" this could then bring up a EC2 feature, 
+2. when you have clicked on that it will bring up a page full of key pairs if their isn't any yet we can just make one. 
+3. in order to do so click the Create key pair in the top right corner: 
+4. Entering an appropriate name something like "Group-Name-AWS" you want to make sure you have the RSA key pair type selected and make sure the private key format is .pem ( this will allow us to SSH into the VM later)
+5. Once you have clicked create a Public key will be attached onto the AWS page and a Private key will be downloaded onto your device. (Never reveal your private key to anyone)
 
 # step 2 - Storing your Private Key safely
 
@@ -55,18 +55,18 @@ An example of how to get to your home directory is as follows:
 Once the key is store its time to create your first instance
 
 # step 3 - Creating your DB (Data Base) Instance
-Back on AWS there should be a list on the left hand side when you are on EC2, if there is not click the blue circle with the 3 lines in the middle.
+1. Back on AWS there should be a list on the left hand side when you are on EC2, if there is not click the blue circle with the 3 lines in the middle.
 On the list there should be an option called instances if so click on it.
 
-This should then bring up a list of all the instanced created by you or your organization if there is none worry not, we will make one.
-In the top left corner click ""Launch Instance" 
+2. This should then bring up a list of all the instanced created by you or your organization if there is none worry not, we will make one.
+3. In the top left corner click ""Launch Instance" 
 That will then take you onto a page asking you to fill out information and select and application and OS image, 
 
-The first thing you want to do is to name your image appropriately something like "group-name-db-to-run",or "group-name-app-to-run" once you have named it you need to select a OS Image, for this guide we will be Using "Ubuntu".
-Click on the Ubuntu quick start and just below on the AMI tap click the drop down box just below it and select "Ubuntu Server 22.04 LTS (HVM) SSD Volume type" This should be a free tier image.
+4. The first thing you want to do is to name your image appropriately something like "group-name-db-to-run",or "group-name-app-to-run" once you have named it you need to select a OS Image, for this guide we will be Using "Ubuntu".
+5. Click on the Ubuntu quick start and just below on the AMI tap click the drop down box just below it and select "Ubuntu Server 22.04 LTS (HVM) SSD Volume type" This should be a free tier image.
 
-Once selected scroll down to Instance type clicking the drop down arrow inside the box type/select "t3.micro" when selected the all generations slider should be ticked which is good.
-once completed you can move on to adding your key pair you just created in the Key Pair Login box just below, For this you can just search for it with the group-name you made earlier.
+6. Once selected scroll down to Instance type clicking the drop down arrow inside the box type/select "t3.micro" when selected the all generations slider should be ticked which is good.
+7. once completed you can move on to adding your key pair you just created in the Key Pair Login box just below, For this you can just search for it with the group-name you made earlier.
 
 ### Network Settings for db
 
@@ -75,28 +75,31 @@ With all of this completed we need to sort out the  DB Network Settings:
 You should have two inbound rules the first is the SSH port range 22
 and the other is the Custom TCP 27017
 
-You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like "group-name-allow-ssh-mongodb" and just copy and paste the name into the description as well. 
+1. You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like ["group-name-allow-ssh-mongodb"]() and just copy and paste the name into the description as well. 
 
-To add the port 27017 we need to click the Add security group rule button which will allow us to then put 27017 into the port range box and then you're done.
+2. To add the port 27017 we need to click the Add security group rule button which will allow us to then put 27017 into the port range box and then you're done.
 
-You can now click "Launch Instance on the right hand side of the screen (An orange button)
+3. You can now click "Launch Instance on the right hand side of the screen (An orange button)
 
 ### Network Settings for App
 
-For the app instance you will need to have 3 different inbound rules
+1. For the app instance you will need to have 3 different inbound rules
 port 80, Can be added by clicking the "Allow HTTP traffic from internet before clicking edit on the network settings. 
-port 3000, - Used later when making our app link to pages.
+
+>port 3000, - Used later when making our app link to pages.
 port 22,- default port
 
-You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like "group-name-allow-ssh-http" and just copy and paste the name into the description as well. 
+2. You can add this by clicking the edit button in the top right corner if the network settings box, Be sure to rename the security group to something appropriate like "group-name-allow-ssh-http" and just copy and paste the name into the description as well. 
 
-To add the port 3000 we need to click the Add security group rule button which will allow us to then put 3000 into the port range box and then you're done.
+3. To add the port 3000 we need to click the Add security group rule button which will allow us to then put 3000 into the port range box and then you're done.
 
-You can now click "Launch Instance on the right hand side of the screen (An orange button)
+4. You can now click "Launch Instance on the right hand side of the screen (An orange button)
 
 ------------------------------------------
 
 # DB Script walkthrough  
+
+["Script for DataBase"](/AWS/prov.db2.sh)
 
 My script now: 
 ```
@@ -207,6 +210,7 @@ we then start mongodb and enable it
 
  # App Script walkthrough  
 
+["Script for App](/AWS/prov.app2.sh)
  Current App Script:
 
 This section is same for most script and as described above
