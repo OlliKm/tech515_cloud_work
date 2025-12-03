@@ -25,7 +25,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
    mongodb-org-database-tools-extra=7.0.24
 
 
-sudo sed -i 's/bindIp: .*/bindIp: 0.0.0.0/' /etc/mongod.conf
+sudo sed -i 's|  bindIp: 127.0.0.1|  bindIp: 0.0.0.0|' /etc/mongod.conf
 
 sudo systemctl start mongod
 sudo systemctl enable mongod 

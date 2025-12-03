@@ -29,29 +29,43 @@ json
 aws s3 ls
 aws s3 help
 
-#### add the inside of a file then create it
-echo This is the first line in a test file2 > test2.txt
-
-#### Add file to bucket 
-aws s3 cp <filename> s3://<bucket name>
-
-#### view files of a bucket
-aws s3 ls s3://tech515-oliver-first-bucket
-
-###~ when in a folder / directory
-
-* download bucket into downloads
-aws s3 sync s3://tech515-oliver-first-bucket .
-
-* remove a singe file from bucket 
-> aws s3 rm s3://tech515-oliver-first-bucket/<name of file to remove>
-
-* remove all files from the bucket - dangerous command ⚠️
-> aws s3 rm s3://tech515-oliver-first-bucket --recursive
->
-* remove bucket with files in it ⚠️
-> aws s3 rb s3://tech515-oliver-first-bucket --force
+### how to do the manipulate S3 storage using AWS CLI /commands to use
+  - list the buckets:
+  
+    - aws s3 ls
+  
+  - make a bucket:
+> aws s3 mb s3://tech515-oliver-first-bucket
+  
+  - Upload a file to s3
+> aws s3 cp test.txt s3://tech515-oliver-first-bucket
  
+  - list files in a bucket
+> aws s3 ls s3://tech515-oliver-first-bucket
+
+  - download files from buckets
+> aws s3 sync s3://tech515-oliver-first-bucket .
+
+  - remove a single file bucket
+>  aws s3 rm s3://tech515-oliver-first-bucket/test.txt
+
+  - remove the all files from bucket
+ > aws s3 rm --recursive s3://tech515-oliver-first-bucket
+
+- ⚠️ Danger: will delete everything in the bucket without prompting (asking)
+- - remove bucket with files in it
+> aws s3 rb s3://tech515-oliver-first-bucket -- force
+    - ⚠️ Danger: will delete the bucket and everything in the bucket without prompting (asking)
+
+
+
+
+
+
+
+
+
+
 
  # Task 1
  #### Use python boto3 to manipulate S3 storage
@@ -84,3 +98,12 @@ once you have finished the first script + you run it - post the link in the chat
 run your other script, post the link in the chat so can see it changed back, once you have another thumbs up from your trainer
 documentation on how and WHY you completed the task - it should be ready to share on the screen for tomorrow 9:30am. Please include:
 how S3 storage works to provide redundancy, high availability and helps with disaster recovery
+
+
+
+---------------------------------------
+
+
+# monitoring 
+
+![alt text](image.png)

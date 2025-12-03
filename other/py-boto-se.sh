@@ -7,7 +7,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
 
 # install python
 sudo apt-get-install python3 -y
-sudo apt-get-install python3-pip -y
+sudo apt-get install python3-pip -y
 sudo pip install awscli
 
 #alias 
