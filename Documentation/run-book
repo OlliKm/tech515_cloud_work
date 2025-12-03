@@ -311,19 +311,19 @@ Once you have your Launch Template created you can now make your new Auto Scalin
 
 #### Accessing the Auto Scaling Group Tab
 * Step 1
-  ![alt text](image-9.png)
+  ![alt text](/Images/image-9.png)
   First click on the Auto Scaling Groups option on the EC2 AWS bar on the left - it should be the last option on the list.
 
 -----------------------------------------------
 * Step 2
-![alt text](image.png)
+![alt text](/Images/image.png)
 On the first page of "create Auto Scaling Group -
 * name your ASG appropriate following naming conventions like "tech515-oliver-asg-app" and be sure to select your launch template that we have just made.
   
 * once complete click the next button in bottom right to move to the next page
 --------------------------------------------- 
 * Step 3
-![alt text](image-1.png)
+![alt text](/Images/image-1.png)
 For the next page we will need to leave the vpc as default and configure the Availability zones and subnets we will be using
 We will need 3 subnets:
 *  A
@@ -348,7 +348,7 @@ Once those have been added to your subnet we want to leave the "Availability Zon
   * This one may be confusing as there is a lot to configure 
 ### Part A
 > step 1
-![alt text](image-2.png)
+![alt text](/Images/image-2.png)
 > step 1
 
 Within the first section of step 3 of creation we need to select our load balancing for this we will pick "Attach to a new load balancer" as we haven't got one created
@@ -356,7 +356,7 @@ Within the first section of step 3 of creation we need to select our load balanc
 * we also need to make sure we select Internet Facing as this will allow input from HTTP and HTTPS (The Web)
 ### Part B
 > step 2
-![alt text](image-3.png)
+![alt text](/Images/image-3.png)
 > step 2
 > 
 This part is simple you just want to click when it says default routing and then select create a target group
@@ -364,7 +364,7 @@ This part is simple you just want to click when it says default routing and then
   
 ### Part C
 > Step 3
-![alt text](image-4.png)
+![alt text](/Images/image-4.png)
 > Step 3
 
 For this part of the page we are wanting to enable the "Additional health check types:
@@ -373,7 +373,7 @@ For this part of the page we are wanting to enable the "Additional health check 
 
 ### Part D
 > Step 4
-![alt text](image-5.png)
+![alt text](/Images/image-5.png)
 > Step 4
 
 for this next page we are configuring how many VM's we want running- 
@@ -384,7 +384,7 @@ with the minium of 2 in case 1 crashes this insure there will always be one runn
   
 ### Part E
 > Step 5
-![alt text](image-7.png)
+![alt text](/Images/image-7.png)
 > Step 5
 
 For this step we are simply changing the instance warm up to 180 seconds and making sure we stay on "Average CPU Usage"
@@ -399,7 +399,7 @@ For this step we are simply changing the instance warm up to 180 seconds and mak
 
 * step 7
 > Step 7
-![alt text](image-8.png)
+![alt text](/Images/image-8.png)
 > Step 7
 
 * For this page we are wanting to add a tag under the key section we want to add "Name" and under the value we want to put what our instances will be called something like "tech515-oliver-asg-HA-SC2"
