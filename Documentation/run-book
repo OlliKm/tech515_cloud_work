@@ -300,7 +300,8 @@ in the DB I swapped the .* i had to the (bindIp: 127.0.0.1) to sort any faults t
 # Creating a Launch template
 
 > Launch template photo
-![alt text](/Images/image.png)
+![alt text](/Images/Launch=template.png)
+![alt text](/Images/launch-pt2.png)
 > Launch template photo
 
 **A launch template is a set of already configured files that will be use to clone and replicate AMI instances**
@@ -324,7 +325,7 @@ Once you have your Launch Template created you can now make your new Auto Scalin
 
 #### Accessing the Auto Scaling Group Tab
 * Step 1
-  ![alt text](/Images/image-9.png)
+  ![alt text](/Images/asg.pt1.png)
   First click on the Auto Scaling Groups option on the EC2 AWS bar on the left - it should be the last option on the list.
 
 

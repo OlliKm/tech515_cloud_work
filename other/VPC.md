@@ -52,18 +52,19 @@ if we ssh into the app vm we can **Jumpbox** into the db vm by ssh with the priv
 # How to make your working VPC
  
 # step 1 make your vpc 
-![alt text](/Images/image-2.png)
+![alt text](/Images/create-vpc.png)
+
 use 10.0.0.0/16 instead 
 
 # step 2 make your subnet
-![alt text](/Images/image-5.png)
-![alt text](/Images/image-6.png)
+![alt text](/Images/new-subnet.png)
+![alt text](/Images/Subnet-make.png)
 
 # step 3 make the intenet gateway
-![alt text](/Images/image-7.png)
+![alt text](/Images/internetGateway.png)
 
 # step 5 make  the route table
-![alt text](/Images/image-1.png)
+![alt text](/Images/route-table.png)
 
 
 # How to remove everything correctly 
