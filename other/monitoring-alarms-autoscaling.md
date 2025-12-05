@@ -69,3 +69,5 @@ Auto scaling group =
 * target group - allows the load balancer to know which machines are not being used efficiently. 
 
 --------------------------------------------------
+
+

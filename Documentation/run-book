@@ -25,6 +25,7 @@
     - [stoping any running jobs then start to make sure its fresh and the port isn't occupied.](#stoping-any-running-jobs-then-start-to-make-sure-its-fresh-and-the-port-isnt-occupied)
       - [change the IP to match the DB priv IP](#change-the-ip-to-match-the-db-priv-ip)
       - [stop all pm2 jobs running](#stop-all-pm2-jobs-running)
+- [Monitoring alarms \& autoscaling](#monitoring-alarms--autoscaling)
 - [Creating a Launch template](#creating-a-launch-template)
 - [Creating an auto scaling group](#creating-an-auto-scaling-group)
       - [Accessing the Auto Scaling Group Tab](#accessing-the-auto-scaling-group-tab)
@@ -290,21 +291,33 @@ in the DB I swapped the .* i had to the (bindIp: 127.0.0.1) to sort any faults t
 
 * for the App I have [App Script](/AWS/prov.app2.sh) as my working script I had to restart the aws instance delete / remove the repo folder from previous attempts and then run the sh file prov.app2.sh which when the ip was correct in the export the posts page worked. 
 -------------------------------------------------
+
+# Monitoring alarms & autoscaling 
+( work in progress)
+* [Most info is on this page](/other/monitoring-alarms-autoscaling.md)
+--------------------------------------------------
+
 # Creating a Launch template
-A launch template is a set of already configured files that will be use to clone and replicate AMI instances 
+
+> Launch template photo
+![alt text](/Images/image.png)
+> Launch template photo
+
+**A launch template is a set of already configured files that will be use to clone and replicate AMI instances**
 
 1. click on the Launch Template Tab on the instances bar, once selected click create launch template in the top right corner
-2. Name your launch instance something like "tech515-oliver-for-asg-app-lt"
+2. Name your launch instance something like **"tech515-oliver-for-asg-app-lt"**
 3. attach your previously made AMI Image onto the applications and OS Images section under the "My AMI's"
 4. in the instance type selection box below select the t3.micro option
 5. Connect your AWS Key Pair to the "key pair (login) tab so you can access the VM's
-6. Within the Network settings chose an already existing security group and select the relevant one whether its for the app ["tech-515-oliver-allow-ssh-http"]() or the DB ["tech515-oliver-allow-ssh-mongodb"]()
+6. Within the Network settings chose an already existing security group and select the relevant one whether its for the app **"tech-515-oliver-allow-ssh-http"** or the DB **"tech515-oliver-allow-ssh-mongodb"**
 7. If you are making the App launch template make sure to include your Run script in the User Data sections at the bottom.
 
 Once you have your Launch Template created you can now make your new Auto Scaling Group
 
-------------------------------------------------
 
+* once complete click the next button in bottom right to move to the next page
+------------------------------------------------- 
 # Creating an auto scaling group 
 * To learn more about auto scaling and its uses click link below
 [learn-more-about-auto-scaling-and-monitoring](/other/monitoring-alarms-autoscaling.md)
@@ -314,16 +327,13 @@ Once you have your Launch Template created you can now make your new Auto Scalin
   ![alt text](/Images/image-9.png)
   First click on the Auto Scaling Groups option on the EC2 AWS bar on the left - it should be the last option on the list.
 
------------------------------------------------
-* Step 2
-![alt text](/Images/image.png)
-On the first page of "create Auto Scaling Group -
-* name your ASG appropriate following naming conventions like "tech515-oliver-asg-app" and be sure to select your launch template that we have just made.
-  
-* once complete click the next button in bottom right to move to the next page
+
 --------------------------------------------- 
-* Step 3
+* Step 2
+> Availability Zones & Subnets
 ![alt text](/Images/image-1.png)
+> Availability Zones & Subnets
+
 For the next page we will need to leave the vpc as default and configure the Availability zones and subnets we will be using
 We will need 3 subnets:
 *  A
@@ -344,66 +354,66 @@ And This will be our Zone C subnet
 Once those have been added to your subnet we want to leave the "Availability Zone Distribution" to the default - "Balance Best Effort"
 * once complete click the next button in bottom right to move to the next page
 ----------------------------------------------------- 
-* Step 4
+* Step 3
   * This one may be confusing as there is a lot to configure 
 ### Part A
-> step 1
+> part A photo
 ![alt text](/Images/image-2.png)
-> step 1
+> part A photo
 
 Within the first section of step 3 of creation we need to select our load balancing for this we will pick "Attach to a new load balancer" as we haven't got one created
 * be sure to name your load balancer I recommend adding "lb" to the end instead of 1 thats default
 * we also need to make sure we select Internet Facing as this will allow input from HTTP and HTTPS (The Web)
 ### Part B
-> step 2
+> part B photo
 ![alt text](/Images/image-3.png)
-> step 2
+> part B photo
 > 
 This part is simple you just want to click when it says default routing and then select create a target group
-* this should then  prompt us to name it so following naming conventions something like "tech515-oliver-asg-app-lb-tg"
+* this should then  prompt us to name it so following naming conventions something like **"tech515-oliver-asg-app-lb-tg"**
   
 ### Part C
-> Step 3
+> part C photo
 ![alt text](/Images/image-4.png)
-> Step 3
+> part C photo
 
 For this part of the page we are wanting to enable the "Additional health check types:
-- [x] Turn on Elastic Load Balancing health checks" 
-* then configure the Health check grace period to 180 seconds (3 mins) to allow time for the app to load up without the system flagging it as unhealthy 
+ - [x] Turn on Elastic Load Balancing health checks" 
+2. * then configure the Health check grace period to 180 seconds (3 mins) to allow time for the app to load up without the system flagging it as unhealthy 
 
 ### Part D
-> Step 4
+> part D photo
 ![alt text](/Images/image-5.png)
-> Step 4
+> part D photo
 
-for this next page we are configuring how many VM's we want running- 
+1. for this next page we are configuring how many VM's we want running- 
 for this we will set the Desired Capacity to 2 running machines 
 with the minium of 2 in case 1 crashes this insure there will always be one running and set the max capacity to 3 in case the expected capacity is reached
 * for automatic scaling - set that to Target tracking scaling policy and move to step 5
 
   
 ### Part E
-> Step 5
+> part E photo
 ![alt text](/Images/image-7.png)
-> Step 5
+> part E photo
 
-For this step we are simply changing the instance warm up to 180 seconds and making sure we stay on "Average CPU Usage"
-* once complete click next on the page
+For this step we are simply changing the instance warm up to **180** seconds and making sure we stay on "Average CPU Usage"
+1. * once complete click next on the page
   
-* Ignore everything below the instance warm up and just click next to move to next page
+2. * Ignore everything below the instance warm up and just click next to move to next page
 ----------------------------------- 
-* step 6
-  Just ignore the notification and click "Next"
+* step 5
+  Just ignore the notification page just and click **Next**
 
   -----------------------------------------------------
 
-* step 7
-> Step 7
+* step 6
+> tags photo
 ![alt text](/Images/image-8.png)
-> Step 7
+> tags photo
 
-* For this page we are wanting to add a tag under the key section we want to add "Name" and under the value we want to put what our instances will be called something like "tech515-oliver-asg-HA-SC2"
-* Once this has been completed click next 
+1. * For this page we are wanting to add a tag under the key section we want to add "Name" and under the value we want to put what our instances will be called something like **"tech515-oliver-asg-HA-SC2"**
+2. * Once this has been completed click next 
 ------------------------------------------- 
 * Review Page
   * This should bring up a review page if all the detail are correct click the "Create Auto Scaling Group" button in the bottom right
@@ -411,7 +421,7 @@ For this step we are simply changing the instance warm up to 180 seconds and mak
 
 # how to remove the auto scaling room 
 
-* What to delete first
+**What to delete first**
 1. Delete load balancer
 2. Target groups
 3. Auto scaling groups (asg)
